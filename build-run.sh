@@ -37,10 +37,10 @@ function CreateImage {
 if [ "$1" == "--build" ]; then
     GetNewRelease
     BuildImage 
-    CreateImage
 fi
 
 if [ "$1" == "--run" ]; then
+	CreateImage
 	docker stop "$TS_CONTAINER_NAME"
 	docker start "$TS_CONTAINER_NAME"
 fi
