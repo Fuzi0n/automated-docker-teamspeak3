@@ -2,7 +2,7 @@
 
 TS_CONTAINER_NAME="teamspeak3"
 
-TS_URL="http://dl.4players.de/ts/releases/3.0.13.8/teamspeak3-server_linux_amd64-3.0.13.8.tar.bz2"
+TS_URL="http://dl.4players.de/ts/releases/3.4.0/teamspeak3-server_linux_amd64-3.4.0.tar.bz2"
 
 
 function GetNewRelease {
@@ -13,6 +13,16 @@ function GetNewRelease {
 
 }
 
+
+function BackupDB {
+
+        local DB_SOURCE_PATH=$1
+        local DB_DEST_PATH=$2
+
+        if [ -e "$DB_SOURCE_PATH" ];then
+             cp  "$DB_SOURCE_PATH" "$DB_DEST_PATH/ts3server.sqlitedb_$(date +%s)"
+	fi
+}
 
 function BuildImage {
     if [ -f "Dockerfile" ];then
@@ -41,6 +51,7 @@ fi
 
 if [ "$1" == "--run" ]; then
 	CreateImage
+	BackupDB "/data/docker/volumes/teamspeak/ts3server.sqlitedb" "/data/docker/volumes/teamspeak/backup/"
 	docker stop "$TS_CONTAINER_NAME"
 	docker start "$TS_CONTAINER_NAME"
 fi
