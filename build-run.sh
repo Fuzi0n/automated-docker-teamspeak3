@@ -12,8 +12,13 @@ Usage: `basename $0` [--help]|[--build][--run]
 Options:
    - --help:  show the help menu.
    - --build: build all the layers and fetch the last version of teamspeak3 on the website (default version is: $TS_URL).
-   - --run: run the container with the default parameter
+   - --run: run the container with the default parameters
 
+Pre-requisites (will be set as parameter in further updates):
+   - mkdir -p /data/docker/volumes/teamspeak/logs/ /data/docker/volumes/teamspeak/
+   - create or reuse your sqlite DB (default name: ts3server.sqlitedb) and add it to /data/docker/volumes/teamspeak/
+   - create query_ip_blacklist.txt and it to /data/docker/volumes/teamspeak/ 
+   
 HELP_USAGE
 }
 
@@ -54,6 +59,7 @@ function CreateImage {
 	    docker stop "$TS_CONTAINER_NAME"
             docker rm "$TS_CONTAINER_NAME"
 	fi
+
 	docker create --name "$TS_CONTAINER_NAME" --net=host -v /etc/localtime:/etc/locatime:ro -v /etc/timezone:/etc/timezone:ro -v /data/docker/volumes/teamspeak/ts3server.sqlitedb:/opt/teamspeak3/teamspeak3-server_linux_amd64/ts3server.sqlitedb:rw -v /data/docker/volumes/teamspeak/logs/:/opt/teamspeak3/teamspeak3-server_linux_amd64/logs:rw -v /data/docker/volumes/teamspeak/query_ip_blacklist.txt:/opt/teamspeak3/teamspeak3-server_linux_amd64/query_ip_blacklist.txt:rw -v /data/docker/volumes/teamspeak/query_ip_whitelist.txt:/opt/teamspeak3/teamspeak3-server_linux_amd64/query_ip_whitelist.txt:rw -t "$TS_CONTAINER_NAME" 
 
 }
