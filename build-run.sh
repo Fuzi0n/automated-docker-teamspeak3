@@ -1,4 +1,5 @@
 #!/bin/bash
+# vim: tabstop=2 shiftwidth=2 expandtab
 
 TS_CONTAINER_NAME="teamspeak3"
 
@@ -21,12 +22,14 @@ function BackupDB {
 
         if [ -e "$DB_SOURCE_PATH" ];then
              cp  "$DB_SOURCE_PATH" "$DB_DEST_PATH/ts3server.sqlitedb_$(date +%s)"
+	else	
+	     echo "[WARNING] no database found at: "$DB_SOURCE_PATH""
 	fi
 }
 
 function BuildImage {
     if [ -f "Dockerfile" ];then
-	     docker build --force-rm=true --pull --build-arg TS_USERNAME="$TS_CONTAINER_NAME" --build-arg TS_URL_BZ2="$TS_URL" -t "$TS_CONTAINER_NAME" .
+	     docker build --pull --build-arg TS_USERNAME="$TS_CONTAINER_NAME" --build-arg TS_URL_BZ2="$TS_URL" -t "$TS_CONTAINER_NAME" .
     else
 	    echo "[ERROR]: No Dockerfile found in $CWD"
     fi
@@ -40,7 +43,7 @@ function CreateImage {
 	    docker stop "$TS_CONTAINER_NAME"
             docker rm "$TS_CONTAINER_NAME"
 	fi
-	docker create --name "$TS_CONTAINER_NAME" --net=host -v /etc/timezone:/etc/timezone:ro -v /data/docker/volumes/teamspeak/ts3server.sqlitedb:/opt/teamspeak3/teamspeak3-server_linux_amd64/ts3server.sqlitedb:rw -v /data/docker/volumes/teamspeak/logs/:/opt/teamspeak3/teamspeak3-server_linux_amd64/logs:rw -v /data/docker/volumes/teamspeak/query_ip_blacklist.txt:/opt/teamspeak3/teamspeak3-server_linux_amd64/query_ip_blacklist.txt:rw -v /data/docker/volumes/teamspeak/query_ip_whitelist.txt:/opt/teamspeak3/teamspeak3-server_linux_amd64/query_ip_whitelist.txt:rw -t "$TS_CONTAINER_NAME" 
+	docker create --name "$TS_CONTAINER_NAME" --net=host -v /etc/localtime:/etc/locatime:ro -v /etc/timezone:/etc/timezone:ro -v /data/docker/volumes/teamspeak/ts3server.sqlitedb:/opt/teamspeak3/teamspeak3-server_linux_amd64/ts3server.sqlitedb:rw -v /data/docker/volumes/teamspeak/logs/:/opt/teamspeak3/teamspeak3-server_linux_amd64/logs:rw -v /data/docker/volumes/teamspeak/query_ip_blacklist.txt:/opt/teamspeak3/teamspeak3-server_linux_amd64/query_ip_blacklist.txt:rw -v /data/docker/volumes/teamspeak/query_ip_whitelist.txt:/opt/teamspeak3/teamspeak3-server_linux_amd64/query_ip_whitelist.txt:rw -t "$TS_CONTAINER_NAME" 
 
 }
 
