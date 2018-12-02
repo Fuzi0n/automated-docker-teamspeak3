@@ -1,6 +1,6 @@
 FROM ubuntu:latest
 
-RUN echo "Building Image"
+RUN echo "Building Teamspeak3 image"
 ARG TS_USERNAME
 RUN useradd -ms /bin/bash "${TS_USERNAME}"
 ARG TS_URL_BZ2

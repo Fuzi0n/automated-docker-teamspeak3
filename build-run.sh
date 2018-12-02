@@ -6,27 +6,32 @@ TS_CONTAINER_NAME="teamspeak3"
 TS_URL="http://dl.4players.de/ts/releases/3.4.0/teamspeak3-server_linux_amd64-3.4.0.tar.bz2"
 
 Usage () {
+
     cat <<HELP_USAGE
 
 Usage: `basename $0` [--help]|[--build][--run] 
 Options:
-   - --help:  show the help menu.
-   - --build: build all the layers and fetch the last version of teamspeak3 on the website (default version is: $TS_URL).
-   - --run: run the container with the default parameters
+   * --help:  show the help menu.
+   * --build: build all the layers and fetch the last version of teamspeak3 on the website (default version is: $TS_URL).
+   * --run: run the container with the default parameters
 
 Pre-requisites (will be set as parameter in further updates):
-   - mkdir -p /data/docker/volumes/teamspeak/logs/ /data/docker/volumes/teamspeak/
-   - create or reuse your sqlite DB (default name: ts3server.sqlitedb) and add it to /data/docker/volumes/teamspeak/
-   - create query_ip_blacklist.txt and it to /data/docker/volumes/teamspeak/ 
+   * mkdir -p /data/docker/volumes/teamspeak/logs/ /data/docker/volumes/teamspeak/
+   * create or reuse your sqlite DB (default name: ts3server.sqlitedb) and add it to /data/docker/volumes/teamspeak/
+   * create query_ip_blacklist.txt and it to /data/docker/volumes/teamspeak/ 
    
 HELP_USAGE
 }
 
 function GetNewRelease {
+
 	TS_RELEASE=$(curl -s "https://www.teamspeak.com/en/downloads/" | egrep -o "href=\"http://.*teamspeak3-server_linux_amd64.*.bz2\">" | cut -d "=" -f2 | sed 's/>//g; s/\"//g')
-	if [ -n "$TS_RELEASE" ]; then
-		TS_URL="$TS_RELEASE"
+
+	if [ -z "$TS_RELEASE" ]; then
+		TS_RELEASE="$TS_URL"
 	fi
+
+	echo "------------- Using teamspeak 3image $TS_RELEASE (default is: $TS_URL)"
 
 }
 
@@ -44,8 +49,9 @@ function BackupDB {
 }
 
 function BuildImage {
+
     if [ -f "Dockerfile" ];then
-	     docker build --pull --build-arg TS_USERNAME="$TS_CONTAINER_NAME" --build-arg TS_URL_BZ2="$TS_URL" -t "$TS_CONTAINER_NAME" .
+	     docker build --pull --build-arg TS_USERNAME="$TS_CONTAINER_NAME" --build-arg TS_URL_BZ2="$TS_RELEASE" -t "$TS_CONTAINER_NAME" .
     else
 	    echo "[ERROR]: No Dockerfile found in $CWD"
     fi
