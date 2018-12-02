@@ -5,6 +5,17 @@ TS_CONTAINER_NAME="teamspeak3"
 
 TS_URL="http://dl.4players.de/ts/releases/3.4.0/teamspeak3-server_linux_amd64-3.4.0.tar.bz2"
 
+Usage () {
+    cat <<HELP_USAGE
+
+Usage: `basename $0` [--help]|[--build][--run] 
+Options:
+   - --help:  show the help menu.
+   - --build: build all the layers and fetch the last version of teamspeak3 on the website (default version is: $TS_URL).
+   - --run: run the container with the default parameter
+
+HELP_USAGE
+}
 
 function GetNewRelease {
 	TS_RELEASE=$(curl -s "https://www.teamspeak.com/en/downloads/" | egrep -o "href=\"http://.*teamspeak3-server_linux_amd64.*.bz2\">" | cut -d "=" -f2 | sed 's/>//g; s/\"//g')
@@ -46,6 +57,11 @@ function CreateImage {
 	docker create --name "$TS_CONTAINER_NAME" --net=host -v /etc/localtime:/etc/locatime:ro -v /etc/timezone:/etc/timezone:ro -v /data/docker/volumes/teamspeak/ts3server.sqlitedb:/opt/teamspeak3/teamspeak3-server_linux_amd64/ts3server.sqlitedb:rw -v /data/docker/volumes/teamspeak/logs/:/opt/teamspeak3/teamspeak3-server_linux_amd64/logs:rw -v /data/docker/volumes/teamspeak/query_ip_blacklist.txt:/opt/teamspeak3/teamspeak3-server_linux_amd64/query_ip_blacklist.txt:rw -v /data/docker/volumes/teamspeak/query_ip_whitelist.txt:/opt/teamspeak3/teamspeak3-server_linux_amd64/query_ip_whitelist.txt:rw -t "$TS_CONTAINER_NAME" 
 
 }
+
+if [ "${#@}" -eq 0 ] || [ "$1" == "--help" ]; then
+    Usage
+    exit 1
+fi
 
 if [ "$1" == "--build" ]; then
     GetNewRelease
