@@ -1,0 +1,1 @@
+# automated-docker-teamspeak3
