@@ -5,6 +5,8 @@ TS_CONTAINER_NAME="teamspeak3"
 
 TS_URL="http://dl.4players.de/ts/releases/3.4.0/teamspeak3-server_linux_amd64-3.4.0.tar.bz2"
 
+TS_URL_REGEX="http://.*teamspeak3-server_linux_amd64.*.bz2\">"
+
 Usage () {
 
     cat <<HELP_USAGE
@@ -25,7 +27,7 @@ HELP_USAGE
 
 function GetNewRelease {
 
-	TS_RELEASE=$(curl -s "https://www.teamspeak.com/en/downloads/" | egrep -o "href=\"http://.*teamspeak3-server_linux_amd64.*.bz2\">" | cut -d "=" -f2 | sed 's/>//g; s/\"//g')
+	TS_RELEASE=$(curl -s "https://www.teamspeak.com/en/downloads/" | egrep -o "$TS_URL_REGEX" | cut -d "=" -f2 | sed 's/>//g; s/\"//g')
 
 	if [ -z "$TS_RELEASE" ]; then
 		TS_RELEASE="$TS_URL"
