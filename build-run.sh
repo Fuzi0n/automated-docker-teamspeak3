@@ -33,7 +33,7 @@ function GetNewRelease {
 		TS_RELEASE="$TS_URL"
 	fi
 
-	echo "------------- Using teamspeak 3image $TS_RELEASE (default is: $TS_URL)"
+	echo "------------- Using teamspeak3 image $TS_RELEASE (default is: $TS_URL)"
 
 }
 
