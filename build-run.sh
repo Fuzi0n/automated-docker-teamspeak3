@@ -5,7 +5,7 @@ TS_CONTAINER_NAME="teamspeak3"
 
 TS_URL="http://dl.4players.de/ts/releases/3.4.0/teamspeak3-server_linux_amd64-3.4.0.tar.bz2"
 
-TS_URL_REGEX="http://.*teamspeak3-server_linux_amd64.*.bz2\">"
+TS_URL_REGEX="https?://.*teamspeak3-server_linux_amd64.*.bz2\">"
 
 Usage () {
 
@@ -27,10 +27,21 @@ HELP_USAGE
 
 function GetNewRelease {
 
-	TS_RELEASE=$(curl -s "https://www.teamspeak.com/en/downloads/" | egrep -o "$TS_URL_REGEX" | cut -d "=" -f2 | sed 's/>//g; s/\"//g')
+	TS_RELEASE=$(curl -s "https://www.teamspeak.com/en/downloads/" | egrep -o "$TS_URL_REGEX" | cut -d "=" -f2 | sed 's/>//g; s/\"//g' | head -n 1)
 
 	if [ -z "$TS_RELEASE" ]; then
-		TS_RELEASE="$TS_URL"
+		echo "Do you want to use the default teamspeak tarball (y/n) ? ($TS_URL)"
+		read TS_URL_ANSWER
+		if [ "$TS_URL_ANSWER" == "y" ];then 
+		    echo "Defaulting to \"$TS_URL\"!"
+		    TS_RELEASE="$TS_URL"
+		elif [ "$TS_URL_ANSWER" == "n" ] || [ -z "$TS_URL_ANSWER"  ]; then
+                   echo "Exiting..." 
+		   exit 100
+		else
+		   echo "No valid answer typed"
+		   exit 101
+		fi
 	fi
 
 	echo "------------- Using teamspeak3 image $TS_RELEASE (default is: $TS_URL)"
@@ -67,6 +78,9 @@ function CreateImage {
 	    docker stop "$TS_CONTAINER_NAME"
             docker rm "$TS_CONTAINER_NAME"
 	fi
+
+	## TODO 
+	#### SET PARAMETERS FOR THIS COMMAND
 
 	docker create --name "$TS_CONTAINER_NAME" --net=host -v /etc/localtime:/etc/locatime:ro -v /etc/timezone:/etc/timezone:ro -v /data/docker/volumes/teamspeak/ts3server.sqlitedb:/opt/teamspeak3/teamspeak3-server_linux_amd64/ts3server.sqlitedb:rw -v /data/docker/volumes/teamspeak/logs/:/opt/teamspeak3/teamspeak3-server_linux_amd64/logs:rw -v /data/docker/volumes/teamspeak/query_ip_blacklist.txt:/opt/teamspeak3/teamspeak3-server_linux_amd64/query_ip_blacklist.txt:rw -v /data/docker/volumes/teamspeak/query_ip_whitelist.txt:/opt/teamspeak3/teamspeak3-server_linux_amd64/query_ip_whitelist.txt:rw -t "$TS_CONTAINER_NAME" 
 
