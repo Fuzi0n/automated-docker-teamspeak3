@@ -1,6 +1,7 @@
 #!/bin/bash
 # vim: tabstop=2 shiftwidth=2 expandtab
 
+
 TS_CONTAINER_NAME="teamspeak3"
 
 TS_URL="http://dl.4players.de/ts/releases/3.4.0/teamspeak3-server_linux_amd64-3.4.0.tar.bz2"
@@ -23,6 +24,11 @@ Pre-requisites (will be set as parameter in further updates):
    * create query_ip_blacklist.txt and it to /data/docker/volumes/teamspeak/ 
    
 HELP_USAGE
+}
+
+
+function GetOptions {
+	echo -n
 }
 
 function GetNewRelease {
