@@ -1,0 +1,10 @@
+---
+  - name: "Starting deployment of teamspeak3"
+    hosts: localhost
+    connection: local 
+    gather_facts: False
+    vars: 
+      ts3_download_url: "{{ lookup('teamspeak3', 'https://www.teamspeak.com/en/downloads/') }}"
+    tasks:
+     - debug:
+         msg: "Teamspeak3 URL: {{ ts3_download_url }}"
