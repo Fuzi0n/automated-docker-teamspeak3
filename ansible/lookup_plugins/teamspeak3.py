@@ -50,14 +50,11 @@ class LookupModule(LookupBase):
           """ 
           This method is a hook for LookupModule plugins
           """
-          return_url = []
           url = terms[0]
           if validators.url(terms[0]):
             if requests.head(url, verify=False).status_code == 200:
-              r = self.get_latest_release(url, TS_REGEX)
-              if r:
-                return r
-              else:
-                return []
+              return self.get_latest_release(url, TS_REGEX)
+            else:
+              raise AnsibleError("HTTP HEAD failed on: {}".format(url))  
           else:
             raise AnsibleError("Argument provided is not a valid URL")
