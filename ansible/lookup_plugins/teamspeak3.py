@@ -29,7 +29,6 @@ DOCUMENTATION = """
 TS_REGEX=r"(?P<ts_url>https?:\/\/.*teamspeak3-server_linux_amd64.*.bz2)"
 
 class LookupModule(LookupBase):
-
         def get_latest_release(self, url, regex):
           """
           This method will return the latest url found on https://www.teamspeak.com/en/downloads/
