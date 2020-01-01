@@ -1,1 +1,4 @@
-ts3_download_url: https://www.teamspeak.com/en/downloads/
+ts_database_local_path: /data/persistent/
+docker_db_container_path: /opt/teamspeak3
+ts_container_name: teamspeak3
+docker_ts_username: "{{ ts_container_name }}"

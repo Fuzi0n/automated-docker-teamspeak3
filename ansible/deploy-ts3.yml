@@ -1,10 +1,10 @@
 ---
-  - name: "Starting deployment of teamspeak3"
+  - name: "Starting deployment of Teamspeak voicechat server"
     hosts: localhost
-    connection: local 
     gather_facts: False
+    become: yes
     vars: 
-      ts3_download_url: "{{ lookup('teamspeak3', 'https://www.teamspeak.com/en/downloads/') }}"
-    tasks:
-     - debug:
-         msg: "Teamspeak3 URL: {{ ts3_download_url }}"
+      ts_linux_release: "{{ lookup('teamspeak3', 'https://www.teamspeak.com/en/downloads/' ) }}"
+    roles:
+      - teamspeak3 
+
