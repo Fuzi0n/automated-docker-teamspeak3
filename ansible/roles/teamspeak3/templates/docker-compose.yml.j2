@@ -30,7 +30,7 @@ services:
     volumes:
       - /etc/localtime:/etc/locatime:ro
       - /etc/timezone:/etc/timezone:ro
-      - {{ ts_database_local_path }}:/opt/teamspeak3/teamspeak3-server_linux_amd64/ts3server.sqlitedb
+      - {{ ts_database_local_path }}:{{ docker_ts_container_home }}/teamspeak3-server_linux_amd64/ts3server.sqlitedb
       {% if docker_ts_additional_volumes -%}
       {% for item in docker_ts_additional_volumes %}
       - {{ item }}
