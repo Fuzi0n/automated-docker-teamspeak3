@@ -26,24 +26,26 @@ DOCUMENTATION = """
 """
 
 
-TS_REGEX=r"(?P<ts_url>https?:\/\/.*teamspeak3-server_linux_amd64.*.bz2)"
+TS_REGEX=r"(?P<ts_url>https?:\/\/.*teamspeak3-server_linux_amd64.(?P<ts_version>.*).tar.bz2)"
 
 class LookupModule(LookupBase):
         def get_latest_release(self, url, regex):
           """
-          This method will return the latest url found on https://www.teamspeak.com/en/downloads/
+          This method will return the latest version of teamspeak found on https://www.teamspeak.com/en/downloads/.
           """
           try:
             response = requests.get(url, verify=False)
             if response.status_code == 200:
               match = re.search(regex, response.text)
-              display.debug(match.group('ts_url'))
-              if match.group('ts_url'):
-                return [match.group('ts_url')]
+              if match.groups:
+                return [match.group('ts_url'), match.group('ts_version')]
               else:
                 return []
+            else:
+              return []
           except:
-            raise 
+            AnsibleError("HTTP failed on: {}".format(url))
+            return []
 
         def run(self, terms, variables, **kwargs):
           """ 
@@ -51,9 +53,6 @@ class LookupModule(LookupBase):
           """
           url = terms[0]
           if validators.url(terms[0]):
-            if requests.head(url, verify=False).status_code == 200:
-              return self.get_latest_release(url, TS_REGEX)
-            else:
-              raise AnsibleError("HTTP HEAD failed on: {}".format(url))  
+            return self.get_latest_release(url, TS_REGEX)
           else:
             raise AnsibleError("Argument provided is not a valid URL")

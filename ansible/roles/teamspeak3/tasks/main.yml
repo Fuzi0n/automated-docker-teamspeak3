@@ -1,12 +1,16 @@
-- name: "Build {{ ts_container_name }} with url: {{ ts_linux_release }}"
+- name: "Build {{ ts_container_name }} with url: {{ ts_linux_release.split(',')[0] }}"
   docker_image:
     name: "{{ ts_container_name }}"
     build:
-      path: ../
+      path: ./files/
       args:
         TS_USERNAME: "{{ docker_ts_username }}"
-        TS_URL_BZ2: "{{ ts_linux_release }}"
-        TS_CONTAINER_NAME: "{{ ts_linux_release }}"
+        TS_URL_BZ2: "{{ ts_linux_release.split(',')[0] }}"
+        TS_CONTAINER_NAME: "{{ ts_linux_release.split(',')[1] }}"
+        TS_CONTAINER_HOME: "{{ docker_ts_container_home }}"
+    force_source: "yes"
+    name: "{{ ts_container_name }}"
+    tag: "{{ ts_linux_release.split(',')[1] }}"
     source: build
   register: image_build
 
