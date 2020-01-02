@@ -1,4 +1,4 @@
-- name: "Build {{ ts_container_name }} with url: {{ ts_linux_release.split(',')[0] }}"
+- name: "Build image {{ ts_container_name }}:{{ ts_linux_release.split(',')[1] }}"
   docker_image:
     name: "{{ ts_container_name }}"
     build:
@@ -9,6 +9,7 @@
         TS_CONTAINER_NAME: "{{ ts_linux_release.split(',')[1] }}"
         TS_CONTAINER_HOME: "{{ docker_ts_container_home }}"
     force_source: "yes"
+    force_tag: "yes"
     name: "{{ ts_container_name }}"
     tag: "{{ ts_linux_release.split(',')[1] }}"
     source: build
@@ -25,15 +26,16 @@
     src: docker-compose.yml.j2
     dest: "{{ docker_template_dir }}/docker-compose.yml"
     mode: '0644'
+  register: compose
 
 - name: "Stop {{ ts_container_name }} if running"
   docker_compose: 
     project_src: "{{ docker_template_dir }}"
     state: absent
-  when: image_build.changed
+  when: image_build.changed or compose.changed
 
 - name: "Start {{ ts_container_name }}"
   docker_compose: 
     project_src: "{{ docker_template_dir }}"
   register: compose_output
-  when: image_build.changed
+  when: image_build.changed or compose.changed
