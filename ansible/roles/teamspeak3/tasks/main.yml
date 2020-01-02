@@ -1,0 +1,39 @@
+- name: "Build {{ ts_container_name }} with url: {{ ts_linux_release.split(',')[0] }}"
+  docker_image:
+    name: "{{ ts_container_name }}"
+    build:
+      path: ./files/
+      args:
+        TS_USERNAME: "{{ docker_ts_username }}"
+        TS_URL_BZ2: "{{ ts_linux_release.split(',')[0] }}"
+        TS_CONTAINER_NAME: "{{ ts_linux_release.split(',')[1] }}"
+        TS_CONTAINER_HOME: "{{ docker_ts_container_home }}"
+    force_source: "yes"
+    name: "{{ ts_container_name }}"
+    tag: "{{ ts_linux_release.split(',')[1] }}"
+    source: build
+  register: image_build
+
+- name: "Create template dir: {{ docker_template_dir }}"
+  file:
+    path: "{{ docker_template_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: "Copy the docker-compose template file in {{ docker_template_dir }}"
+  template: 
+    src: docker-compose.yml.j2
+    dest: "{{ docker_template_dir }}/docker-compose.yml"
+    mode: '0644'
+
+- name: "Stop {{ ts_container_name }} if running"
+  docker_compose: 
+    project_src: "{{ docker_template_dir }}"
+    state: absent
+  when: image_build.changed
+
+- name: "Start {{ ts_container_name }}"
+  docker_compose: 
+    project_src: "{{ docker_template_dir }}"
+  register: compose_output
+  when: image_build.changed

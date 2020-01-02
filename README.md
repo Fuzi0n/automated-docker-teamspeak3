@@ -1,14 +1,33 @@
 # automated-docker-teamspeak3
-## Script Help menu
-``` 
-Usage: build-run.sh [--help]|[--build][--run]
-Options:
-   * --help:  show the help menu.
-   * --build: build all the layers and fetch the last version of teamspeak3 on the website (default version is: http://dl.4players.de/ts/releases/3.4.0/teamspeak3-server_linux_amd64-3.4.0.tar.bz2).
-   * --run: run the container with the default parameters
+# Prerequisites
+* python>=3.6
+* docker-ce>=17.04
+* python3-pip
+* sudo privilegies to run docker command
+* optional: python3-virtualenv
 
-Pre-requisites (will be set as parameter in further updates):
-   * mkdir -p /data/docker/volumes/teamspeak/logs/ /data/docker/volumes/teamspeak/
-   * create or reuse your sqlite DB (default name: ts3server.sqlitedb) and add it to /data/docker/volumes/teamspeak/
-   * create query_ip_blacklist.txt and it to /data/docker/volumes/teamspeak/
+# Install python3 required modules
+```
+pip3 install -r requirements.txt
+```
+
+# Playbook configuration
+You can configure parameters in ansible/groups_vars/all or ansible/host_vars/localhost
+```
+...
+docker_ts_container_home: /opt/teamspeak3
+docker_ts_username: "{{ ts_container_name }}"
+docker_ts_expose_port_service: 9987
+docker_ts_expose_port_filetransfer: 30033
+docker_ts_expose_port_server_query: 10011
+...
+````
+If you already have a working Teamspeak SQlite database you can bind it inside the container with parameter:
+```
+ts_database_local_path: <docker_host_local_path>
+```
+## Usage
+``` 
+$ cd ansible
+$ ansible-playbook --limit localhost deploy-teamspeak.yml
 ```

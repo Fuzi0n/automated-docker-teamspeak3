@@ -1,0 +1,13 @@
+ts_database_local_path: /data/docker/volumes/teamspeak/ts3server.sqlitedb
+ts_container_name: teamspeak3-ansible
+
+docker_ts_container_home: /opt/teamspeak3
+docker_ts_username: "{{ ts_container_name }}"
+docker_ts_expose_port_service: 9987
+docker_ts_expose_port_filetransfer: 30033
+docker_ts_expose_port_server_query: 10011
+docker_ts_expose_port_server_query_secured: 10022
+docker_ts_expose_port_tsdns: 41144
+docker_ts_additional_volumes: ""
+docker_ts_container_restart_policy: always
+docker_template_dir: /tmp/{{ ts_container_name }}
