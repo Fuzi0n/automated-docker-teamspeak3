@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   voicechat:
-    image: {{ ts_container_name }}
+    image: {{ ts_container_name }}:{{ ts_linux_release.split(',')[1] }}
     deploy:
       restart_policy:
         condition: {{ docker_ts_container_restart_policy }}
