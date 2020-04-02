@@ -11,19 +11,19 @@ services:
         window: 120s
 
     ports:
-      {% if docker_ts_expose_port_service -%}
+      {% if docker_ts_expose_port_service is defined -%}
       - "{{ docker_ts_expose_port_service }}:9987/udp"
       {% endif -%}
-      {% if docker_ts_expose_port_filetransfer -%}
+      {% if docker_ts_expose_port_filetransfer is defined -%}
       - "{{ docker_ts_expose_port_filetransfer }}:30033"
       {% endif -%}
-      {% if docker_ts_expose_port_server_query -%}
+      {% if docker_ts_expose_port_server_query is defined -%}
       - "{{ docker_ts_expose_port_server_query }}:10011"
       {% endif -%}
-      {% if docker_ts_expose_port_server_query_secured -%}
+      {% if docker_ts_expose_port_server_query_secured is defined -%}
       - "{{ docker_ts_expose_port_server_query_secured }}:10022"
       {% endif -%}
-      {% if docker_ts_expose_port_service -%}
+      {% if docker_ts_expose_port_service is defined -%}
       - "{{ docker_ts_expose_port_tsdns }}:41144"
       {% endif %}
 
@@ -31,7 +31,7 @@ services:
       - /etc/localtime:/etc/locatime:ro
       - /etc/timezone:/etc/timezone:ro
       - {{ ts_database_local_path }}:{{ docker_ts_container_home }}/teamspeak3-server_linux_amd64/ts3server.sqlitedb
-      {% if docker_ts_additional_volumes -%}
+      {% if docker_ts_additional_volumes is defined -%}
       {% for item in docker_ts_additional_volumes %}
       - {{ item }}
       {% endfor -%}
