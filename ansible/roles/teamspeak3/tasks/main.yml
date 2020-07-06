@@ -2,6 +2,7 @@
   docker_image:
     name: "{{ ts_container_name }}"
     build:
+      pull: yes
       path: ./files/
       args:
         TS_USERNAME: "{{ docker_ts_username }}"
@@ -10,7 +11,6 @@
         TS_CONTAINER_HOME: "{{ docker_ts_container_home }}"
     force_source: "yes"
     force_tag: "yes"
-    name: "{{ ts_container_name }}"
     tag: "{{ ts_linux_release.split(',')[1] }}"
     source: build
   register: image_build
