@@ -9,5 +9,6 @@ docker_ts_expose_port_server_query: 10011
 #docker_ts_expose_port_server_query_secured: 10022
 docker_ts_expose_port_tsdns: 41144
 docker_ts_additional_volumes: ""
-docker_ts_container_restart_policy: always
+docker_ts_container_restart_policy: on-failure
 docker_template_dir: /tmp/{{ ts_container_name }}
+redeploy: no
