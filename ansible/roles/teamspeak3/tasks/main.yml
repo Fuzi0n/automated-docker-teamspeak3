@@ -32,10 +32,10 @@
   docker_compose: 
     project_src: "{{ docker_template_dir }}"
     state: absent
-  when: image_build.changed or compose.changed
+  when: image_build.changed or compose.changed or redeploy
 
 - name: "Start {{ ts_container_name }}"
   docker_compose: 
     project_src: "{{ docker_template_dir }}"
   register: compose_output
-  when: image_build.changed or compose.changed
+  when: image_build.changed or compose.changed or redeploy
